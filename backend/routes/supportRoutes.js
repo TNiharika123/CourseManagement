@@ -1,12 +1,12 @@
+// routes/supportRoutes.js
 const express = require("express");
 const router = express.Router();
-const Course = require("../models/Course");
+const supportController = require("../controllers/supportController");
 
-router.post("/", async (req, res) => {
-  const { title, description, instructor } = req.body;
-  const course = new Course({ title, description, instructor });
-  await course.save();
-  res.status(201).json({ message: "Course added successfully!" });
-});
+// Route to create a support request
+router.post("/create", supportController.createSupportRequest);
+
+// Route to fetch all support requests, optionally filtered by learnerId
+router.get("/", supportController.getSupportRequestsByLearner);
 
 module.exports = router;

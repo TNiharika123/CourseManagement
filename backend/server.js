@@ -12,11 +12,11 @@ app.use(cors());
 app.use(express.json());
 
 // Import Routes
-app.use("/api/courses", require("./routes/courseRoutes"));  // No change needed here for Solution 1
+app.use("/api/courses", require("./routes/courseRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/quizzes", require("./routes/quizRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
-app.use("/api/ai-exams", require("./routes/aiExamRoutes"));
+app.use("/api/exams", require("./routes/aiExamRoutes"));  // ✅ Ensure this is correct
 app.use("/api/support", require("./routes/supportRoutes"));
 
 const PORT = process.env.PORT || 5000;

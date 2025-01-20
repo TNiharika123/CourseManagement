@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const Course = require("../models/Course");
+const aiExamController = require("../controllers/aiExamController");
 
-router.post("/", async (req, res) => {
-  const { title, description, instructor } = req.body;
-  const course = new Course({ title, description, instructor });
-  await course.save();
-  res.status(201).json({ message: "Course added successfully!" });
-});
+// Define routes
+router.post("/", aiExamController.createAIExam);
+router.get("/", aiExamController.getAllAIExams);
+router.get("/:examId", aiExamController.getExamById);
+router.put("/:examId", aiExamController.updateExam);
+router.delete("/:examId", aiExamController.deleteExam);
 
 module.exports = router;

@@ -1,8 +1,14 @@
+// models/Support.js
 const mongoose = require("mongoose");
 
-const SupportSchema = new mongoose.Schema({
-  user: String,
-  query: String,
+const supportRequestSchema = new mongoose.Schema({
+  learnerId: { type: String, required: true },
+  subject: { type: String, required: true },
+  message: { type: String, required: true },
+  status: { type: String, default: "Pending" }, // Default status
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Support", SupportSchema);
+const Support = mongoose.model("Support", supportRequestSchema);
+
+module.exports = Support;
