@@ -1,9 +1,8 @@
-// components/NavBar.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Typography } from '@mui/material';
 
-const NavBar = ({ onLogout,learnerId }) => {
+const NavBar = ({ onLogout, learnerId, role }) => {  // Assuming `role` is passed down as a prop (e.g., "instructor", "learner")
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -26,6 +25,18 @@ const NavBar = ({ onLogout,learnerId }) => {
         <Button color="inherit" component={Link} to="/support">
           Support
         </Button>
+
+        
+            <Button color="inherit" component={Link} to="/updateCourse">
+              Update Course
+            </Button>
+            <Button color="inherit" component={Link} to="/createCourse">
+              Create Course
+            </Button>
+            <Button color="inherit" component={Link} to="/createAIExam">
+              Create AI Exam
+            </Button>
+       
         <Button color="inherit" onClick={handleLogout}>
           Logout
         </Button>

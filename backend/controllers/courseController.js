@@ -3,11 +3,10 @@
 const Learner = require('../models/Learner');
 const Course = require('../models/Course');
 
-
-
 exports.createCourse = async (req, res) => {
   try {
     const courseData = req.body;
+    console.log("Received Data:", courseData); // Debugging
 
     // Validate required fields
     if (!courseData.title || !courseData.pricing || !courseData.instructorId || !courseData.instructorName) {
@@ -20,10 +19,11 @@ exports.createCourse = async (req, res) => {
 
     res.status(201).json({ message: 'Course created successfully', course: newCourse });
   } catch (error) {
-    console.error('Error creating course:', error);
+    console.error('Error creating course:', error); // Debugging
     res.status(500).json({ message: 'Failed to create course', error: error.message });
   }
 };
+
 
 // Controller function
 exports.getCourses = async (req, res) => {
@@ -75,11 +75,11 @@ exports.updateCourse = async (req, res) => {
   };
   
 
-  // Delete course by ID
+// Delete course by ID
 exports.deleteCourse = async (req, res) => {
   try {
-    const { courseId } = req.params;
-    const course = await Course.findByIdAndDelete(courseId);
+    const { id } = req.params;  // Use `id` as per the route
+    const course = await Course.findByIdAndDelete(id);
 
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });

@@ -23,6 +23,7 @@ const InstructorChangeCourse = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+        
         const response = await fetch("http://localhost:5000/api/courses");
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
@@ -42,6 +43,7 @@ const InstructorChangeCourse = () => {
   // Delete course
   const deleteCourse = async (id) => {
     try {
+      
       const response = await fetch(`http://localhost:5000/api/courses/${id}`, {
         method: "DELETE",
       });

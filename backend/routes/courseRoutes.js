@@ -16,8 +16,8 @@
 
     // Update a course by ID (Fixed parameter name)
     router.put('/:id', courseController.updateCourse);
-
-    // Delete a course by ID
-    router.delete('/:id', courseController.deleteCourse);
+    
+// Delete a course by ID
+router.delete('/:id', courseController.deleteCourse);  // Use `id` as the route parameter
 
     module.exports = router;

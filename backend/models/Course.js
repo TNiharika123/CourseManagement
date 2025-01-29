@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const courseSchema = new Schema({
   title: String,
   category: String,
-  status: { type: String, required: true },
+  status: { type: String, required: true, enum: ['draft', 'published'], default: 'draft' }, // Add default
   level: String,
   primaryLanguage: String,
   subtitle: String,
