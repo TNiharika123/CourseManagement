@@ -5,14 +5,15 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 
-const PaymentForm = () => {
+const PaymentForm = ({learnerId }) => {
   const { courseId } = useParams();
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const userId = "65b8d5f70f1a3c001c3a3a92"; // Replace with actual logged-in user ID
+  // Fetching the actual logged-in user ID from localStorage (adjust as needed)
+  const userId = localStorage.getItem("userId"); // Assuming the user ID is saved in localStorage after login
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -47,6 +48,11 @@ const PaymentForm = () => {
       return;
     }
 
+    if (!userId) {
+      alert("User not logged in! Please log in to proceed.");
+      return;
+    }
+
     if (paymentMethod === "UPI" && !formData.upi_id) {
       alert("Please enter your UPI ID.");
       return;
@@ -61,11 +67,13 @@ const PaymentForm = () => {
 
     setLoading(true);
 
+    // Including the course title in the payment data
     const paymentData = {
-      userId,
+      userId: learnerId, 
       courseId,
       paymentMethod,
-      amount: selectedCourse.pricing
+      amount: selectedCourse.pricing,
+      courseTitle: selectedCourse.title,  // Add the course title here
     };
 
     console.log("📤 Sending Payment Data:", paymentData); // Debugging log
@@ -84,6 +92,9 @@ const PaymentForm = () => {
 
       if (data.success) {
         alert(`✅ Payment successful! Transaction ID: ${data.paymentId}`);
+        // Optionally, you could update the frontend UI to show the new course in the learner's course list
+        // or navigate to the "My Courses" page.
+        // navigate("/enrolled"); // If you want to redirect the user to the enrolled courses page.
       } else {
         alert("❌ Payment failed. Try again.");
       }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, CardContent, Typography, Grid, CircularProgress } from "@mui/material";
 
+
 const HomePage = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,24 +28,6 @@ const HomePage = () => {
     fetchCourses();
   }, []); // Empty dependency array to run this effect only once
 
-  // Delete course handler
-  const deleteCourse = async (courseId) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/courses/${courseId}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        setCourses(courses.filter(course => course._id !== courseId));
-        alert("Course deleted successfully");
-      } else {
-        alert("Failed to delete the course");
-      }
-    } catch (error) {
-      console.error("Error deleting course:", error);
-      alert("Error deleting the course");
-    }
-  };
 
   if (loading) {
     return (
@@ -65,6 +48,8 @@ const HomePage = () => {
   }
 
   return (
+    <div style={{padding:"20px"}}>
+      <Typography variant="h4" align="center">Learner View: Buy Courses</Typography>
     <Grid container spacing={2} style={{ padding: "20px" }}>
       {courses.length === 0 ? (
         <Typography variant="h6" align="center" style={{ width: "100%" }}>
@@ -86,21 +71,14 @@ const HomePage = () => {
                 >
                   Enroll Now
                 </Button>
-                {/* Delete Button */}
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  style={{ marginTop: "10px", marginLeft: "10px" }}
-                  onClick={() => deleteCourse(course._id)}
-                >
-                  Delete
-                </Button>
+                
               </CardContent>
             </Card>
           </Grid>
         ))
       )}
     </Grid>
+    </div>
   );
 };
 
