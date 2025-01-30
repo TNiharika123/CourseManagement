@@ -37,6 +37,7 @@ const registerUser = async (req, res) => {
 };
 
 // Handle user login
+// Handle user login
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -52,17 +53,17 @@ const loginUser = async (req, res) => {
     // Create token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    // Send response with token and userId
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Login successful",
       token,
-      userId: user._id
+      userId: user._id,
     });
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 
 module.exports = { registerUser, loginUser };
