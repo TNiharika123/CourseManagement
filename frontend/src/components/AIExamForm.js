@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import AIExamService from "../services/AIExamService";
-import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import { Container, Form, Button, Row, Col, Card, Alert } from "react-bootstrap";
+
+const courseCategories = ['Programming', 'Design', 'Marketing'];
+const courseLevelOptions = ['Beginner', 'Intermediate', 'Advanced'];
+const languageOptions = ['English', 'Spanish', 'French'];
 
 const AIExamForm = () => {
   const [examData, setExamData] = useState({
@@ -116,75 +120,107 @@ const AIExamForm = () => {
   };
 
   return (
-    <Container>
-      <h2 className="mt-4">Create AI Exam</h2>
+    <Container className="mt-4">
+      <h2 className="text-center mb-4">Create AI Exam</h2>
+
       <Form onSubmit={handleSubmit}>
-        <Form.Group>
-          <Form.Label>Exam Title</Form.Label>
-          <Form.Control type="text" name="title" value={examData.title} onChange={handleChange} required />
-        </Form.Group>
+        {/* Exam Details Section */}
+        <Card className="mb-4 p-3 shadow-sm">
+          <Card.Body>
+            <h4>Exam Details</h4>
 
-        <Form.Group>
-          <Form.Label>Category</Form.Label>
-          <Form.Control type="text" name="category" value={examData.category} onChange={handleChange} required />
-        </Form.Group>
+            <Row className="mb-3">
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Exam Title</Form.Label>
+                  <Form.Control type="text" name="title" value={examData.title} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
 
-        <Form.Group>
-          <Form.Label>Difficulty Level</Form.Label>
-          <Form.Select name="difficulty" value={examData.difficulty} onChange={handleChange}>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-          </Form.Select>
-        </Form.Group>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Category</Form.Label>
+                  <Form.Control type="text" name="category" value={examData.category} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <Form.Group>
-          <Form.Label>Description</Form.Label>
-          <Form.Control as="textarea" name="description" value={examData.description} onChange={handleChange} required />
-        </Form.Group>
+            <Row className="mb-3">
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Difficulty Level</Form.Label>
+                  <Form.Select name="difficulty" value={examData.difficulty} onChange={handleChange}>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
 
-        <Form.Group>
-          <Form.Label>Duration (minutes)</Form.Label>
-          <Form.Control type="number" name="duration" value={examData.duration} onChange={handleChange} required />
-        </Form.Group>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control as="textarea" name="description" value={examData.description} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <Form.Group>
-          <Form.Label>Total Marks</Form.Label>
-          <Form.Control type="number" name="totalMarks" value={examData.totalMarks} onChange={handleChange} required />
-        </Form.Group>
+            <Row className="mb-3">
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Duration (minutes)</Form.Label>
+                  <Form.Control type="number" name="duration" value={examData.duration} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
 
-        <h4 className="mt-4">Add Questions</h4>
-        <Form.Group>
-          <Form.Label>Question Text</Form.Label>
-          <Form.Control type="text" value={newQuestion.questionText} onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })} required />
-        </Form.Group>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Total Marks</Form.Label>
+                  <Form.Control type="number" name="totalMarks" value={examData.totalMarks} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
 
-        <Row>
-          {newQuestion.options.map((option, index) => (
-            <Col key={index} md={6}>
-              <Form.Group>
-                <Form.Label>Option {index + 1}</Form.Label>
-                <Form.Control type="text" value={option} onChange={(e) => handleQuestionChange(e, index)} required />
-              </Form.Group>
-            </Col>
-          ))}
-        </Row>
+        {/* Add Questions Section */}
+        <Card className="mb-4 p-3 shadow-sm">
+          <Card.Body>
+            <h4>Add Questions</h4>
 
-        <Form.Group>
-          <Form.Label>Correct Answer</Form.Label>
-          <Form.Control type="text" value={newQuestion.correctAnswer} onChange={(e) => setNewQuestion({ ...newQuestion, correctAnswer: e.target.value })} required />
-        </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Question Text</Form.Label>
+              <Form.Control type="text" value={newQuestion.questionText} onChange={(e) => setNewQuestion({ ...newQuestion, questionText: e.target.value })} required />
+            </Form.Group>
 
-        <Form.Group>
-          <Form.Label>Explanation</Form.Label>
-          <Form.Control type="text" value={newQuestion.explanation} onChange={(e) => setNewQuestion({ ...newQuestion, explanation: e.target.value })} />
-        </Form.Group>
+            <Row className="mb-3">
+              {newQuestion.options.map((option, index) => (
+                <Col md={6} key={index}>
+                  <Form.Group>
+                    <Form.Label>Option {index + 1}</Form.Label>
+                    <Form.Control type="text" value={option} onChange={(e) => handleQuestionChange(e, index)} required />
+                  </Form.Group>
+                </Col>
+              ))}
+            </Row>
 
-        <Button variant="secondary" className="mt-2" onClick={addQuestion}>
-          Add Question
-        </Button>
+            <Form.Group className="mb-3">
+              <Form.Label>Correct Answer</Form.Label>
+              <Form.Control type="text" value={newQuestion.correctAnswer} onChange={(e) => setNewQuestion({ ...newQuestion, correctAnswer: e.target.value })} required />
+            </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-3">
+            <Form.Group className="mb-3">
+              <Form.Label>Explanation</Form.Label>
+              <Form.Control type="text" value={newQuestion.explanation} onChange={(e) => setNewQuestion({ ...newQuestion, explanation: e.target.value })} />
+            </Form.Group>
+
+            <Button variant="outline-primary" onClick={addQuestion}>
+              Add Question
+            </Button>
+          </Card.Body>
+        </Card>
+
+        <Button variant="primary" type="submit" className="w-100 mt-4">
           Submit Exam
         </Button>
       </Form>

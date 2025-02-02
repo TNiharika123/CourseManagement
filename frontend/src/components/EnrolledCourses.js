@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Grid, Card, CardContent, Typography, Button, CircularProgress } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Button, CircularProgress, Box } from '@mui/material';
 
 const EnrolledCourses = ({ learnerId }) => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -29,86 +29,101 @@ const EnrolledCourses = ({ learnerId }) => {
   // Show loading spinner while fetching
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </div>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress size={60} />
+      </Box>
     );
   }
 
   // If there's no learnerId, display a message
   if (!learnerId) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <Box sx={{ padding: 2, textAlign: 'center' }}>
         <Typography variant="h6" color="error">
           No learner ID found. Please log in again.
         </Typography>
-      </div>
+      </Box>
     );
   }
 
   // If there's an error fetching courses, display the error message
   if (error) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <Box sx={{ padding: 2, textAlign: 'center' }}>
         <Typography variant="h6" color="error">
           {error}
         </Typography>
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h4" align="center" style={{ marginBottom: '20px', fontWeight: 'bold' }}>
+    <Box sx={{ padding: 3 }}>
+      <Typography variant="h4" align="center" sx={{ marginBottom: 4, fontWeight: 'bold' }}>
         Enrolled Courses
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         {enrolledCourses.length === 0 ? (
-          <Typography variant="h6" align="center" style={{ width: '100%' }}>
+          <Typography variant="h6" align="center" sx={{ width: '100%' }}>
             No courses enrolled yet.
           </Typography>
         ) : (
           enrolledCourses.map((course) => (
             <Grid item xs={12} sm={6} md={4} key={course._id}>
-              <Card variant="outlined">
+              <Card
+                variant="outlined"
+                sx={{
+                  borderRadius: 2,
+                  boxShadow: 2,
+                  '&:hover': { boxShadow: 6 },
+                  transition: 'box-shadow 0.3s ease',
+                }}
+              >
                 <CardContent>
-                  <Typography variant="h6" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
                     {course.title}
                   </Typography>
-                  <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                    Category:
-                  </Typography>
-                  <Typography variant="body2" style={{ fontSize: '1rem', marginBottom: '10px' }}>
-                    {course.category || 'N/A'}
-                  </Typography>
-                  <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                    Level:
-                  </Typography>
-                  <Typography variant="body2" style={{ fontSize: '1rem', marginBottom: '10px' }}>
-                    {course.level || 'N/A'}
-                  </Typography>
-                  <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                    Description:
-                  </Typography>
-                  <Typography variant="body2" style={{ fontSize: '1rem', marginBottom: '10px' }}>
-                    {course.description || 'No description available'}
-                  </Typography>
-                  <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                    Language:
-                  </Typography>
-                  <Typography variant="body2" style={{ fontSize: '1rem', marginBottom: '10px' }}>
-                    {course.primaryLanguage || 'N/A'}
-                  </Typography>
-                  <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                    Price:
-                  </Typography>
-                  <Typography variant="body2" style={{ fontSize: '1rem', marginBottom: '10px' }}>
-                    ₹{course.pricing || 'N/A'}
-                  </Typography>
+                  <Box sx={{ mt: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Category:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '1rem', marginBottom: 1 }}>
+                      {course.category || 'N/A'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Level:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '1rem', marginBottom: 1 }}>
+                      {course.level || 'N/A'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Description:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '1rem', marginBottom: 2 }}>
+                      {course.description || 'No description available'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Language:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '1rem', marginBottom: 1 }}>
+                      {course.primaryLanguage || 'N/A'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Price:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '1rem', marginBottom: 2 }}>
+                      ₹{course.pricing || 'N/A'}
+                    </Typography>
+                  </Box>
                   <Button
                     variant="contained"
                     color="primary"
-                    style={{ marginTop: '10px' }}
+                    fullWidth
+                    sx={{
+                      marginTop: 2,
+                      '&:hover': { backgroundColor: 'primary.dark' },
+                      padding: 1.5,
+                    }}
                     onClick={() => alert(`Redirecting to Course ${course.title}`)} // Replace with real course logic
                   >
                     Open Course
@@ -119,7 +134,7 @@ const EnrolledCourses = ({ learnerId }) => {
           ))
         )}
       </Grid>
-    </div>
+    </Box>
   );
 };
 

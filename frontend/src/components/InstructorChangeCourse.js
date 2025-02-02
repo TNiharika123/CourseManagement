@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { 
-  Button, Card, CardContent, Typography, Grid, CircularProgress, Dialog, DialogActions, 
-  DialogContent, DialogTitle, TextField 
+import {
+  Button, Card, CardContent, Typography, Grid, CircularProgress, Dialog, DialogActions,
+  DialogContent, DialogTitle, TextField, DialogContentText, Alert
 } from "@mui/material";
 
 const InstructorChangeCourse = () => {
@@ -9,21 +9,22 @@ const InstructorChangeCourse = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const [updatedData, setUpdatedData] = useState({ 
-    title: "", 
-    pricing: "", 
-    category: "", 
-    level: "", 
-    primaryLanguage: "", 
-    subtitle: "" 
+  const [updatedData, setUpdatedData] = useState({
+    title: "",
+    pricing: "",
+    category: "",
+    level: "",
+    primaryLanguage: "",
+    subtitle: "",
+    description: "",  // Ensure description is part of the state
   });
 
   // Fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        
         const response = await fetch("http://localhost:5000/api/courses");
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
@@ -41,15 +42,16 @@ const InstructorChangeCourse = () => {
   }, []);
 
   // Delete course
-  const deleteCourse = async (id) => {
+  const deleteCourse = async () => {
+    if (!selectedCourse) return;
+
     try {
-      
-      const response = await fetch(`http://localhost:5000/api/courses/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/courses/${selectedCourse._id}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        setCourses(courses.filter(course => course._id !== id));
+        setCourses(courses.filter(course => course._id !== selectedCourse._id));
         alert("Course deleted successfully");
       } else {
         alert("Failed to delete the course");
@@ -57,19 +59,22 @@ const InstructorChangeCourse = () => {
     } catch (error) {
       console.error("Error deleting course:", error);
       alert("Error deleting the course");
+    } finally {
+      setOpenDeleteDialog(false);  // Close delete dialog
     }
   };
 
   // Open update dialog
   const handleOpenUpdate = (course) => {
     setSelectedCourse(course);
-    setUpdatedData({ 
-      title: course.title || "", 
-      pricing: course.pricing || "", 
-      category: course.category || "", 
-      level: course.level || "", 
-      primaryLanguage: course.primaryLanguage || "", 
-      subtitle: course.subtitle || "" 
+    setUpdatedData({
+      title: course.title || "",
+      pricing: course.pricing || "",
+      category: course.category || "",
+      level: course.level || "",
+      description: course.description || "",  // Ensure description is passed
+      primaryLanguage: course.primaryLanguage || "",
+      subtitle: course.subtitle || "",
     });
     setOpenDialog(true);
   };
@@ -136,9 +141,10 @@ const InstructorChangeCourse = () => {
                   <Typography variant="body2">Category: {course.category || "N/A"}</Typography>
                   <Typography variant="body2">Level: {course.level || "N/A"}</Typography>
                   <Typography variant="body2">Language: {course.primaryLanguage || "N/A"}</Typography>
+                  <Typography variant="body2">Description: {course.description || "N/A"}</Typography>
                   <Typography variant="body2">Subtitle: {course.subtitle || "N/A"}</Typography>
                   <Button variant="contained" color="primary" onClick={() => handleOpenUpdate(course)} style={{ marginRight: "10px" }}>Update</Button>
-                  <Button variant="contained" color="secondary" onClick={() => deleteCourse(course._id)}>Delete</Button>
+                  <Button variant="contained" color="secondary" onClick={() => setSelectedCourse(course) & setOpenDeleteDialog(true)}>Delete</Button>
                 </CardContent>
               </Card>
             </Grid>
@@ -188,6 +194,14 @@ const InstructorChangeCourse = () => {
           />
           <TextField
             fullWidth
+            label="Description"
+            value={updatedData.description}
+            onChange={(e) => setUpdatedData({ ...updatedData, description: e.target.value })}
+            margin="dense"
+          />
+
+          <TextField
+            fullWidth
             label="Subtitle"
             value={updatedData.subtitle}
             onChange={(e) => setUpdatedData({ ...updatedData, subtitle: e.target.value })}
@@ -197,6 +211,20 @@ const InstructorChangeCourse = () => {
         <DialogActions>
           <Button onClick={handleCloseUpdate} color="secondary">Cancel</Button>
           <Button onClick={handleUpdateCourse} color="primary">Update</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this course? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)} color="secondary">Cancel</Button>
+          <Button onClick={deleteCourse} color="error">Delete</Button>
         </DialogActions>
       </Dialog>
     </div>

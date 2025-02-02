@@ -59,10 +59,10 @@ exports.updateCourse = async (req, res) => {
       if (!id.match(/^[0-9a-fA-F]{24}$/)) {
         return res.status(400).json({ success: false, message: "Invalid Course ID format" });
       }
-      const { title, pricing,category,level,primaryLanguage,subtitle } = req.body;
+      const { title, pricing,category,level,primaryLanguage,subtitle,description } = req.body;
       const updatedCourse = await Course.findByIdAndUpdate(
         id,
-        { title, pricing,category,level,primaryLanguage,subtitle },
+        { title, pricing,category,level,primaryLanguage,subtitle,description },
         { new: true }
       );
       if (!updatedCourse) {

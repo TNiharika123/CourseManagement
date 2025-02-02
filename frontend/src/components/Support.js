@@ -76,10 +76,10 @@ const Support = () => {
 
   return (
     <Container>
-      <h2 className="mt-4">Course Management Support</h2>
+      <h2 className="mt-4 mb-4 text-center" style={{ color: "#1976d2" }}>Course Management Support</h2>
 
       {/* Support request form */}
-      <Form onSubmit={handleSubmit} className="p-4 border rounded shadow-sm">
+      <Form onSubmit={handleSubmit} className="p-4 border rounded shadow-sm mb-4">
         <Row className="mb-3">
           <Col md={6}>
             <Form.Label>Issue Category <span style={{ color: "red" }}>*</span></Form.Label>
@@ -146,7 +146,8 @@ const Support = () => {
       {/* Error message */}
       {errorMessage && <Alert variant="danger" className="mt-3">{errorMessage}</Alert>}
 
-      <h3 className="mt-4">Your Support Requests</h3>
+      {/* List of support requests */}
+      <h3 className="mt-4 mb-4" style={{ color: "#1976d2" }}>Your Support Requests</h3>
       <ListGroup>
         {supportRequests.length === 0 ? (
           <p>No support requests found.</p>

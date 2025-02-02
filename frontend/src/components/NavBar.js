@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, Button, Typography } from '@mui/material';
+import { AppBar, Toolbar, Button, Typography, Box } from '@mui/material';
 
-const NavBar = ({ onLogout, learnerId }) => {  // Assuming `role` is passed down as a prop (e.g., "instructor", "learner")
+const NavBar = ({ onLogout, learnerId }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -11,72 +11,72 @@ const NavBar = ({ onLogout, learnerId }) => {  // Assuming `role` is passed down
   };
 
   return (
-    <AppBar position="static">
-      <Toolbar>
+    <AppBar position="static" sx={{ backgroundColor: 'primary.main' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography 
           variant="h6" 
           component="div" 
-          sx={{ flexGrow: 1, fontSize: '1.25rem', textTransform: 'none' }} // Change font size and prevent capitalization
+          sx={{ flexGrow: 1, fontSize: '1.5rem', fontWeight: 'bold' }}
         >
           Learning Platform
         </Typography>
-        <Button 
-          color="inherit" 
-          component={Link} 
-          to="/" 
-          sx={{ fontSize: '1rem', textTransform: 'none' }} // Change font size and prevent capitalization
-        >
-          Home
-        </Button>
-        <Button 
-          color="inherit" 
-          component={Link} 
-          to={`/enrolled/${learnerId}`} 
-          sx={{ fontSize: '1rem', textTransform: 'none' }} // Change font size and prevent capitalization
-        >
-          My Courses
-        </Button>
-        <Button 
-          color="inherit" 
-          component={Link} 
-          to="/support" 
-          sx={{ fontSize: '1rem', textTransform: 'none' }} // Change font size and prevent capitalization
-        >
-          Support
-        </Button>
-
-        <Button 
-          color="inherit" 
-          component={Link} 
-          to="/updateCourse" 
-          sx={{ fontSize: '1rem', textTransform: 'none' }} // Change font size and prevent capitalization
-        >
-          Update Course
-        </Button>
-        <Button 
-          color="inherit" 
-          component={Link} 
-          to="/createCourse" 
-          sx={{ fontSize: '1rem', textTransform: 'none' }} // Change font size and prevent capitalization
-        >
-          Create Course
-        </Button>
-        <Button 
-          color="inherit" 
-          component={Link} 
-          to="/createAIExam" 
-          sx={{ fontSize: '1rem', textTransform: 'none' }} // Change font size and prevent capitalization
-        >
-          Create AI Exam
-        </Button>
-       
-        <Button 
-          color="inherit" 
-          onClick={handleLogout} 
-          sx={{ fontSize: '1rem', textTransform: 'none' }} // Change font size and prevent capitalization
-        >
-          Logout
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to="/" 
+            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
+          >
+            Home
+          </Button>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to={`/enrolled/${learnerId}`} 
+            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
+          >
+            My Courses
+          </Button>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to="/support" 
+            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
+          >
+            Support
+          </Button>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to="/updateCourse" 
+            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
+          >
+            Update Course
+          </Button>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to="/createCourse" 
+            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
+          >
+            Create Course
+          </Button>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to="/createAIExam" 
+            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
+          >
+            Create AI Exam
+          </Button>
+          <Button 
+            color="inherit" 
+            onClick={handleLogout} 
+            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'error.main' } }}
+          >
+            Logout
+          </Button>
+        </Box>
       </Toolbar>
     </AppBar>
   );
