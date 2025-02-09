@@ -13,6 +13,7 @@ router.get('/', getAllLearners);
 router.post('/enroll', enrollInCourse);
 
 // GET route for fetching courses a learner is enrolled in
-router.get('/enrolled/:id', getEnrolledCourses);
+// router.get('/enrolled/:id', getEnrolledCourses);
+router.get("/enrolled/:learnerId", getEnrolledCourses);
 
 module.exports = router;

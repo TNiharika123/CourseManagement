@@ -92,9 +92,21 @@ const PaymentForm = ({learnerId }) => {
 
       if (data.success) {
         alert(`✅ Payment successful! Transaction ID: ${data.paymentId}`);
-        // Optionally, you could update the frontend UI to show the new course in the learner's course list
-        // or navigate to the "My Courses" page.
-        // navigate("/enrolled"); // If you want to redirect the user to the enrolled courses page.
+       
+        // 🆕 Call API to enroll the learner in the course
+        const enrollResponse = await fetch(`http://localhost:5000/api/courses/${courseId}/enroll`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ learnerId: userId }), // Send learnerId
+        });
+        const enrollData = await enrollResponse.json();
+
+        if (enrollData.success) {
+          alert("🎉 You are now enrolled in the course!");
+        } else {
+          alert("⚠️ Payment was successful, but enrollment failed. Contact support.");
+        }
+
       } else {
         alert("❌ Payment failed. Try again.");
       }

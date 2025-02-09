@@ -1,12 +1,9 @@
 const express = require("express");
-const router = express.Router();
-const Course = require("../models/Course");
+const { registerAdmin, loginAdmin } = require("../controllers/adminController");
 
-router.post("/", async (req, res) => {
-  const { title, description, instructor } = req.body;
-  const course = new Course({ title, description, instructor });
-  await course.save();
-  res.status(201).json({ message: "Course added successfully!" });
-});
+const router = express.Router();
+
+router.post("/register", registerAdmin);
+router.post("/login", loginAdmin);
 
 module.exports = router;

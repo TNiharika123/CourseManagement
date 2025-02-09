@@ -1,25 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const path = require("path");
-const { createSupportRequest, getSupportRequestsByLearner } = require("../controllers/supportController");
+const { createSupportRequest, getSupportRequestsByUser, updateSupportStatus } = require("../controllers/supportController");
 
-// Set up multer for file uploads
+// ✅ Setup `multer` for file uploads (Store in `uploads/` folder)
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Save files in the "uploads" folder
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}_${file.originalname}`);
-  },
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, `${Date.now()}_${file.originalname}`),
 });
+const upload = multer({ storage }).single("file");
 
-const upload = multer({ storage }).single("file"); // single file upload
-
-// Route to create a support request with optional file upload
+// ✅ Route: Create a support request (Learner & Instructor)
 router.post("/create", upload, createSupportRequest);
 
-// Route to fetch support requests for a learner
-router.get("/", getSupportRequestsByLearner);
+// ✅ Route: Fetch support requests (Learner or Instructor)
+router.get("/", getSupportRequestsByUser);
+
+// ✅ Route: Update support request status
+router.put("/:id/status", updateSupportStatus);
 
 module.exports = router;

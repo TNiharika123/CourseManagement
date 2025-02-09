@@ -45,30 +45,7 @@ const NavBar = ({ onLogout, learnerId }) => {
           >
             Support
           </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/updateCourse" 
-            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
-          >
-            Update Course
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/createCourse" 
-            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
-          >
-            Create Course
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/createAIExam" 
-            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
-          >
-            Create AI Exam
-          </Button>
+          
           <Button 
             color="inherit" 
             onClick={handleLogout} 

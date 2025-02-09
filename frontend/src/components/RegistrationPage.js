@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { TextField, InputAdornment, IconButton, Button, Typography, Container, Box, Grid, Alert } from "@mui/material";
+import {
+  TextField,
+  InputAdornment,
+  IconButton,
+  Button,
+  Typography,
+  Container,
+  Box,
+  Grid,
+  Alert,
+} from "@mui/material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const RegistrationPage = ({ setLearnerId }) => {
@@ -26,35 +36,43 @@ const RegistrationPage = ({ setLearnerId }) => {
       return;
     }
 
+    // ✅ Email validation
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailRegex.test(email)) {
       setEmailError("Please enter a valid email address");
       return;
     }
 
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    // ✅ Password validation (allows special characters but not required)
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_])?.{6,}$/;
     if (!passwordRegex.test(password)) {
-      setPasswordError("Password must be at least 6 characters long and contain at least one number and one letter.");
+      setPasswordError(
+        "Password must be at least 6 characters long, include at least one letter and one number. Special characters are allowed but not required."
+      );
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/learners/register", {
+      console.log("📤 Sending registration request...");
+      
+      const response = await axios.post("http://localhost:5000/api/auth/register", {
         name,
         email,
         password,
       });
 
-      setLearnerId(response.data.learner._id);
+      console.log("✅ Registration Successful:", response.data);
+
+      // ✅ Check if setLearnerId is passed before calling
+      if (setLearnerId) {
+        setLearnerId(response.data.learner._id);
+      }
+
       navigate("/login");
     } catch (err) {
-      console.error(err);
-      setError("Registration failed. Please try again.");
+      console.error("🚨 Registration Failed:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Registration failed. Try again.");
     }
-  };
-
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -71,7 +89,7 @@ const RegistrationPage = ({ setLearnerId }) => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                label={<span>Name <span style={{ color: "red" }}>*</span></span>}
+                label="Name *"
                 variant="outlined"
                 fullWidth
                 value={name}
@@ -80,7 +98,7 @@ const RegistrationPage = ({ setLearnerId }) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label={<span>Email <span style={{ color: "red" }}>*</span></span>}
+                label="Email *"
                 variant="outlined"
                 fullWidth
                 type="email"
@@ -92,25 +110,27 @@ const RegistrationPage = ({ setLearnerId }) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label={<span>Password <span style={{ color: "red" }}>*</span></span>}
+                label="Password *"
                 type={passwordVisible ? "text" : "password"}
                 variant="outlined"
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={!!passwordError}
-                helperText={passwordError || "Password must be at least 6 characters long and include at least one letter and one number."}
+                helperText={
+                  passwordError ||
+                  "Password must be at least 6 characters long, include at least one letter and one number. Special characters are allowed but not required."
+                }
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={togglePasswordVisibility}>
+                      <IconButton onClick={() => setPasswordVisible(!passwordVisible)}>
                         {passwordVisible ? <FaEyeSlash /> : <FaEye />}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
-
             </Grid>
             <Grid item xs={12}>
               <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>

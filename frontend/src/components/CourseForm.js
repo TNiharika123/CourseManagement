@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState , useRef  } from 'react';
+import { useEffect } from "react";
+
 import {
   Button, Card, CardContent, Typography, Grid, Box, TextField, Select, MenuItem,
   InputLabel, FormControl, Checkbox, FormControlLabel, Divider
@@ -10,16 +12,66 @@ const languageOptions = ['English', 'Spanish', 'French'];
 
 const CourseForm = () => {
   const [courseLandingFormData, setCourseLandingFormData] = useState({
-    title: '', category: '', level: '', primaryLanguage: '', subtitle: '', description: '',
-    pricing: '', objectives: '', welcomeMessage: '', image: '', instructorId: '', instructorName: '',
+    title: '', 
+    category: '', 
+    level: '', 
+    primaryLanguage: '', 
+    subtitle: '', 
+    description: '',
+    pricing: '', 
+    objectives: '', 
+    welcomeMessage: '', 
+    image: '', 
+    instructorId: '', 
+    instructorName: '',
   });
 
-  const [courseCurriculumFormData, setCourseCurriculumFormData] = useState([{ title: '', videoUrl: '', freePreview: false, public_id: '' }]);
+  const [courseCurriculumFormData, setCourseCurriculumFormData] = useState([
+    { title: '', videoUrl: '', freePreview: false, public_id: '' }
+  ]);
+
+  const [imagePreview, setImagePreview] = useState("");
+  const fileInputRef = useRef(null);
+
+
+    // ✅ Fetch Instructor Name & ID on component mount
+    useEffect(() => {
+      const storedInstructorId = localStorage.getItem("userId");
+      const storedInstructorName = localStorage.getItem("instructorName");
+  
+      if (storedInstructorId && storedInstructorName) {
+        setCourseLandingFormData(prevData => ({
+          ...prevData,
+          instructorId: storedInstructorId,
+          instructorName: storedInstructorName
+        }));
+      }
+    }, []);
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCourseLandingFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  // ✅ Image URL Validation
+  const handleImageChange = (e) => {
+    const url = e.target.value.trim();
+    setImagePreview(url); // Show preview
+    setCourseLandingFormData((prevData) => ({ ...prevData, image: url }));
+    // ✅ Accept only valid URLs
+    // const validUrlRegex = /^https?:\/\/.+\.(jpg|jpeg|png|gif|svg|webp)$/i;
+  
+    // if (validUrlRegex.test(url)) {
+    //   setImagePreview(url); // Show preview
+    //   setCourseLandingFormData((prevData) => ({ ...prevData, image: url }));
+    // } else {
+    //   alert("Invalid image URL. Please enter a valid online image link.");
+    //   setCourseLandingFormData((prevData) => ({ ...prevData, image: "" }));
+    //   setImagePreview("");
+    // }
+  };
+  
 
   const handleCurriculumChange = (index, e) => {
     const { name, value } = e.target;
@@ -29,7 +81,10 @@ const CourseForm = () => {
   };
 
   const handleAddCurriculum = () => {
-    setCourseCurriculumFormData([...courseCurriculumFormData, { title: '', videoUrl: '', freePreview: false, public_id: '' }]);
+    setCourseCurriculumFormData([
+      ...courseCurriculumFormData, 
+      { title: '', videoUrl: '', freePreview: false, public_id: '' }
+    ]);
   };
 
   const handleRemoveCurriculum = (index) => {
@@ -39,12 +94,15 @@ const CourseForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!courseLandingFormData.title || !courseLandingFormData.pricing || !courseLandingFormData.instructorId || !courseLandingFormData.instructorName) {
-      alert('Title, Pricing, Instructor ID, and Instructor Name are required!');
+  
+    console.log("🚀 Course Data Before Submission:", courseLandingFormData); // ✅ Debugging
+  
+    if (!courseLandingFormData.title || !courseLandingFormData.pricing || 
+        !courseLandingFormData.instructorId || !courseLandingFormData.image) {
+      alert('Title, Pricing, Instructor ID, and Image URL are required!');
       return;
     }
-
+  
     const courseFinalFormData = {
       date: new Date(),
       ...courseLandingFormData,
@@ -52,22 +110,40 @@ const CourseForm = () => {
       curriculum: courseCurriculumFormData,
       isPublished: true,
     };
-
+  
+    console.log("🚀 Sending Course Data:", courseFinalFormData); // ✅ Debugging
+  
+    const token = localStorage.getItem("authToken");
+  
+    if (!token) {
+      alert("Unauthorized: Please log in again.");
+      return;
+    }
+  
     try {
       const response = await fetch('http://localhost:5000/api/courses', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // ✅ Include token
+        },
         body: JSON.stringify(courseFinalFormData),
       });
-
+  
       const result = await response.json();
+      
+      console.log("🚀 Response from Backend:", result); // ✅ Debugging
+  
       if (response.ok) {
         alert('Course created successfully');
         setCourseLandingFormData({
-          title: '', category: '', level: '', primaryLanguage: '', subtitle: '', description: '',
-          pricing: '', objectives: '', welcomeMessage: '', image: '', instructorId: '', instructorName: '',
+          title: '', category: '', level: '', primaryLanguage: '', subtitle: '', 
+          description: '', pricing: '', objectives: '', welcomeMessage: '', 
+          image: '', instructorId: '', instructorName: '',
         });
-        setCourseCurriculumFormData([{ title: '', videoUrl: '', freePreview: false, public_id: '' }]);
+        setCourseCurriculumFormData([
+          { title: '', videoUrl: '', freePreview: false, public_id: '' }
+        ]);
       } else {
         alert(`Failed to create course: ${result.message}`);
       }
@@ -76,6 +152,7 @@ const CourseForm = () => {
       alert('An error occurred while creating the course');
     }
   };
+  
 
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f9f9f9', borderRadius: '8px', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
@@ -85,7 +162,7 @@ const CourseForm = () => {
 
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          {/* Course Landing Form */}
+          {/* Course Title - Required */}
           <Grid item xs={12} md={6}>
             <TextField
               id="course-title"
@@ -100,6 +177,89 @@ const CourseForm = () => {
             />
           </Grid>
 
+          {/* Instructor ID - Required */}
+          <Grid item xs={12} md={6}>
+            <TextField
+              id="instructor-id"
+              name="instructorId"
+              label="Instructor ID"
+              fullWidth
+              value={courseLandingFormData.instructorId}
+              onChange={handleInputChange}
+              required
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+          </Grid>
+
+          {/* Instructor Name - Required */}
+          <Grid item xs={12} md={6}>
+            <TextField
+              id="instructor-name"
+              name="instructorName"
+              label="Instructor Name"
+              fullWidth
+              value={courseLandingFormData.instructorName}
+              onChange={handleInputChange}
+              required
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+          </Grid>
+
+          {/* Course Price - Required */}
+          <Grid item xs={12} md={6}>
+            <TextField
+              id="pricing"
+              name="pricing"
+              label="Course Price"
+              type="number"
+              fullWidth
+              value={courseLandingFormData.pricing}
+              onChange={handleInputChange}
+              required
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+              InputProps={{
+                startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
+              }}
+            />
+          </Grid>
+
+          {/* Course Image Upload */}
+          <Grid item xs={12} md={6}>
+  <TextField
+    id="course-image-url"
+    name="image"
+    label="Course Image URL"
+    type="url"
+    fullWidth
+    value={courseLandingFormData.image}
+    onChange={handleImageChange} // ✅ Handle image URL
+    variant="outlined"
+    sx={{ marginBottom: 2 }}
+  />
+</Grid>
+
+{/* Show Image Preview */}
+{courseLandingFormData.image && (
+  <Box sx={{ textAlign: "center", mt: 2 }}>
+    <Typography variant="body2">Image Preview:</Typography>
+    <img
+      src={courseLandingFormData.image}
+      alt="Preview"
+      style={{
+        width: "100%",
+        maxHeight: "200px",
+        objectFit: "cover",
+        borderRadius: "8px",
+      }}
+    />
+  </Box>
+)}
+
+
+          {/* Category Selection */}
           <Grid item xs={12} md={6}>
             <FormControl fullWidth variant="outlined" sx={{ marginBottom: 2 }}>
               <InputLabel id="category-label">Category</InputLabel>
@@ -120,6 +280,7 @@ const CourseForm = () => {
             </FormControl>
           </Grid>
 
+          {/* Level Selection */}
           <Grid item xs={12} md={6}>
             <FormControl fullWidth variant="outlined" sx={{ marginBottom: 2 }}>
               <InputLabel id="level-label">Level</InputLabel>
@@ -140,6 +301,7 @@ const CourseForm = () => {
             </FormControl>
           </Grid>
 
+          {/* Language Selection */}
           <Grid item xs={12} md={6}>
             <FormControl fullWidth variant="outlined" sx={{ marginBottom: 2 }}>
               <InputLabel id="language-label">Primary Language</InputLabel>
@@ -160,7 +322,7 @@ const CourseForm = () => {
             </FormControl>
           </Grid>
 
-          {/* Additional fields like Subtitle, Description, Pricing */}
+          {/* Subtitle */}
           <Grid item xs={12} md={6}>
             <TextField
               id="subtitle"
@@ -174,21 +336,7 @@ const CourseForm = () => {
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <TextField
-              id="pricing"
-              name="pricing"
-              label="Pricing"
-              type="number"
-              fullWidth
-              value={courseLandingFormData.pricing}
-              onChange={handleInputChange}
-              required
-              variant="outlined"
-              sx={{ marginBottom: 2 }}
-            />
-          </Grid>
-
+          {/* Description */}
           <Grid item xs={12}>
             <TextField
               id="description"
@@ -204,7 +352,7 @@ const CourseForm = () => {
             />
           </Grid>
 
-          {/* Course Curriculum Form */}
+          {/* Course Curriculum Section */}
           <Grid item xs={12}>
             <Typography variant="h6" gutterBottom sx={{ marginBottom: 2 }}>
               Course Curriculum
@@ -255,7 +403,11 @@ const CourseForm = () => {
               </Box>
             ))}
 
-            <Button variant="outlined" onClick={handleAddCurriculum} sx={{ marginBottom: 3 }}>
+            <Button 
+              variant="outlined" 
+              onClick={handleAddCurriculum} 
+              sx={{ marginBottom: 3 }}
+            >
               Add Module
             </Button>
           </Grid>
