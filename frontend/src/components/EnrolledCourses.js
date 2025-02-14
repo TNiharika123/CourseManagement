@@ -214,7 +214,7 @@ const EnrolledCourses = ({ learnerId }) => {
       </Typography>
       <Grid container spacing={4}>
         {enrolledCourses.length === 0 ? (
-          <Typography variant="h6" align="center" sx={{ width: '100%' }}>
+          <Typography variant="h6" align="center" sx={{ width: '100%',paddingY:5  }}>
             You haven't enrolled in any courses yet.
           </Typography>
         ) : (

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useCallback} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Container,
   Card,
   Paper,
   CardContent,
+  IconButton,
+  InputAdornment,
   Typography,
   TextField,
   Button,
@@ -14,6 +16,7 @@ import {
   Grid,
 } from "@mui/material";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import SchoolIcon from "@mui/icons-material/School";
 import PersonIcon from "@mui/icons-material/Person";
 
@@ -34,11 +37,15 @@ const InstructorLogin = ({setUser} ) => {
   const [captcha, setCaptcha] = useState("");
   const [captchaInput, setCaptchaInput] = useState("");
   const navigate = useNavigate();
+    const [passwordVisible, setPasswordVisible] = useState(false);
 
+   const drawCaptcha = useCallback(() => {
+      setCaptcha(generateCaptchaText());
+    }, []);
   // Generate CAPTCHA on component mount
-  useEffect(() => {
-    setCaptcha(generateCaptchaText());
-  }, []);
+ useEffect(() => {
+    drawCaptcha();
+  }, [drawCaptcha]);
 
   // Handle input field changes
   const handleChange = (e) => {
@@ -52,6 +59,9 @@ const InstructorLogin = ({setUser} ) => {
     setCaptchaInput(""); // Clear input field
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -120,62 +130,35 @@ const InstructorLogin = ({setUser} ) => {
               label="Password"
               type="password"
               name="Password"
+              type={passwordVisible ? "text" : "password"}
               fullWidth
               value={formData.Password}
               onChange={handleChange}
               required
               sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility}>{passwordVisible ? <VisibilityOff /> : <Visibility />}</IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             {/* CAPTCHA Section */}
-            <Grid container spacing={2} alignItems="center" justifyContent="center">
-              <Grid item>
-                <Box
-                  sx={{
-                    display: "inline-block",
-                    padding: "10px 20px",
-                    backgroundColor: "#ddd",
-                    fontSize: "22px",
-                    fontWeight: "bold",
-                    fontFamily: "monospace",
-                    letterSpacing: "4px",
-                    textDecoration: "line-through",
-                    textAlign: "center",
-                    borderRadius: "8px",
-                    boxShadow: "inset 3px 3px 6px rgba(0,0,0,0.2)",
-                    color: "#333",
-                    userSelect: "none",
-                  }}
-                >
-                  {captcha}
-                </Box>
-              </Grid>
-              <Grid item>
-                <Button
-                  onClick={handleCaptchaRefresh}
-                  size="small"
-                  variant="outlined"
-                  sx={{ textTransform: "none", borderRadius: "8px", fontSize: "12px" }}
-                >
-                  Refresh
-                </Button>
-              </Grid>
-            </Grid>
-
-            <TextField
-              fullWidth
-              label="Enter CAPTCHA"
-              variant="outlined"
-              value={captchaInput}
-              onChange={(e) => setCaptchaInput(e.target.value)}
-              sx={{  mb: 2 }}
-              required
-            />
-
-            <Button variant="contained" color="primary" fullWidth type="submit" disabled={loading} sx={{ py: 1.5 }}>
-              {loading ? <CircularProgress size={24} /> : "Login"}
-            </Button>
-          </form>
+            {/* CAPTCHA Section */}
+               <Box sx={{ textAlign: "center", mb: 2 }}>
+                 <Typography variant="h6" sx={{ fontFamily: "monospace", letterSpacing: "4px", textDecoration: "line-through", mb: 1, p: 1, display: "inline-block", backgroundColor: "#ddd", borderRadius: "8px" }}>
+                   {captcha}
+                 </Typography>
+                 <Button onClick={drawCaptcha} size="small" variant="outlined" sx={{ ml: 1 }}>Refresh</Button>
+               </Box>
+               <TextField fullWidth label="Enter CAPTCHA" variant="outlined" value={captchaInput} onChange={(e) => setCaptchaInput(e.target.value)} required sx={{ mb: 2 }} />
+     
+               <Button fullWidth variant="contained" color="primary" type="submit" disabled={loading} sx={{ py: 1.5 }}>
+                 {loading ? <CircularProgress size={24} /> : "Login"}
+               </Button>
+             </form>
 
           {/* Login Options (Admin, Instructor, Learner) */}
           <Box sx={{ textAlign: "center", mt: 3 }}>

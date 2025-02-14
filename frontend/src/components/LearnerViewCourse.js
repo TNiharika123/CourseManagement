@@ -141,9 +141,7 @@ const HomePage = () => {
                       image={course.image || "https://via.placeholder.com/300"}
                       alt={course.title}
                     />
-                    <PriceChip 
-                      label={`₹${course.pricing || 'Free'}`}
-                    />
+                    <PriceChip label={`₹${course.pricing || 'Free'}`} />
                   </Box>
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography variant="h6" gutterBottom>
@@ -173,11 +171,21 @@ const HomePage = () => {
                     </Grid>
 
                     <Button
+                      variant="outlined"
+                      fullWidth
+                      component={Link}
+                      to={`/course/${course._id}`}
+                      sx={{ mb: 1 }}
+                    >
+                      View Course
+                    </Button>
+                    
+                    <Button
                       variant="contained"
                       fullWidth
                       component={Link}
                       to={`/payment/${course._id}`}
-                      sx={{ mt: 2 }}
+                      sx={{ mt: 1 }}
                     >
                       Enroll Now
                     </Button>

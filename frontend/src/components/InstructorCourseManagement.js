@@ -4,7 +4,7 @@ import {
   DialogContent, DialogTitle, DialogActions, IconButton, CircularProgress, 
   CardMedia, Divider, Checkbox, FormControlLabel 
 } from "@mui/material";
-import { AddCircle, Close, Save } from "@mui/icons-material";
+import { AddCircle, Close, Save,Edit } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 
 const InstructorCourseManagement = () => {
@@ -15,6 +15,7 @@ const InstructorCourseManagement = () => {
   const [editMode, setEditMode] = useState(false);
   const [updatedCourse, setUpdatedCourse] = useState({});
   const [showLessonDialog, setShowLessonDialog] = useState(false);
+  const [editingLessonIndex, setEditingLessonIndex] = useState(null);
 
   const [newLesson, setNewLesson] = useState({
     title: "",
@@ -70,13 +71,30 @@ const InstructorCourseManagement = () => {
     }
   };
 
-  const handleAddLesson = () => {
-    setUpdatedCourse({ 
-      ...updatedCourse, 
-      curriculum: [...(updatedCourse.curriculum || []), newLesson] 
-    });
+  const handleAddOrUpdateLesson = () => {
+    const updatedLessons = [...(updatedCourse.curriculum || [])];
+    if (editingLessonIndex !== null) {
+      updatedLessons[editingLessonIndex] = newLesson;
+    } else {
+      updatedLessons.push(newLesson);
+    }
+    setUpdatedCourse({ ...updatedCourse, curriculum: updatedLessons });
     setNewLesson({ title: "", videoUrl: "", freePreview: false });
+    setEditingLessonIndex(null);
     setShowLessonDialog(false);
+  };
+
+  const handleEditLesson = (index) => {
+    setNewLesson(updatedCourse.curriculum[index]);
+    setEditingLessonIndex(index);
+    setShowLessonDialog(true);
+  };
+
+  const handleLessonToggle = (index) => {
+    const updatedLessons = updatedCourse.curriculum.map((lesson, i) => 
+      i === index ? { ...lesson, freePreview: !lesson.freePreview } : lesson
+    );
+    setUpdatedCourse({ ...updatedCourse, curriculum: updatedLessons });
   };
 
   if (loading) {
@@ -103,10 +121,12 @@ const InstructorCourseManagement = () => {
 
       <Grid container spacing={4}>
         {/* 🔹 Course Details */}
+
+        {/*  */}
         <Grid item xs={12} md={8}>
           <Card sx={{ mb: 3 }}>
             <CardContent>
-              <Typography variant="h5" fontWeight="bold">Course Details</Typography>
+              <Typography variant="h5" fontWeight="bold">Course Curriculum</Typography>
               <Divider sx={{ my: 1 }} />
               <TextField 
                 label="Course Title" name="title" fullWidth sx={{ mb: 2 }} 
@@ -133,25 +153,23 @@ const InstructorCourseManagement = () => {
               <Divider sx={{ my: 1 }} />
               {updatedCourse.curriculum?.length > 0 ? (
                 updatedCourse.curriculum.map((lesson, index) => (
-                  <Box key={index} display="flex" alignItems="center" sx={{
-                    p: 2,
-                    borderBottom: "1px solid #ddd",
-                    "&:hover": { backgroundColor: "#e0f7fa" },
-                  }}>
+                  <Box key={index} display="flex" alignItems="center" sx={{ p: 2, borderBottom: "1px solid #ddd" }}>
                     <Typography variant="body2" sx={{ flex: 1 }}>
-                      {lesson.title} {lesson.freePreview && "(Free Preview)"}
+                      {lesson.title}
                     </Typography>
+                    <FormControlLabel 
+                      control={<Checkbox checked={lesson.freePreview} onChange={() => handleLessonToggle(index)} />} 
+                      label="Free Preview"
+                    />
+                    <IconButton onClick={() => handleEditLesson(index)}><Edit /></IconButton>
                   </Box>
                 ))
               ) : (
                 <Typography>No lessons added yet.</Typography>
               )}
-
-              {editMode && (
-                <Button startIcon={<AddCircle />} variant="outlined" color="primary" fullWidth sx={{ mt: 2 }} onClick={() => setShowLessonDialog(true)}>
-                  Add Lesson
-                </Button>
-              )}
+              <Button startIcon={<AddCircle />} variant="outlined" fullWidth sx={{ mt: 2 }} onClick={() => setShowLessonDialog(true)}>
+                Add Lesson
+              </Button>
             </CardContent>
           </Card>
         </Grid>
@@ -186,19 +204,15 @@ const InstructorCourseManagement = () => {
 
       {/* Lesson Dialog */}
       <Dialog open={showLessonDialog} onClose={() => setShowLessonDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          Add Lesson
-          <IconButton aria-label="close" onClick={() => setShowLessonDialog(false)} sx={{ position: "absolute", right: 10, top: 10 }}>
-            <Close />
-          </IconButton>
-        </DialogTitle>
+        <DialogTitle>{editingLessonIndex !== null ? "Edit Lesson" : "Add Lesson"}</DialogTitle>
         <DialogContent>
           <TextField label="Lesson Title" fullWidth sx={{ mb: 2 }} value={newLesson.title} onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })} />
           <TextField label="Google Drive Video URL" fullWidth sx={{ mb: 2 }} value={newLesson.videoUrl} onChange={(e) => setNewLesson({ ...newLesson, videoUrl: e.target.value })} />
+          <FormControlLabel control={<Checkbox checked={newLesson.freePreview} onChange={(e) => setNewLesson({ ...newLesson, freePreview: e.target.checked })} />} label="Free Preview" />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowLessonDialog(false)} color="secondary">Cancel</Button>
-          <Button onClick={handleAddLesson} color="primary">Add Lesson</Button>
+          <Button onClick={() => setShowLessonDialog(false)}>Cancel</Button>
+          <Button onClick={handleAddOrUpdateLesson}>{editingLessonIndex !== null ? "Update Lesson" : "Add Lesson"}</Button>
         </DialogActions>
       </Dialog>
     </Box>

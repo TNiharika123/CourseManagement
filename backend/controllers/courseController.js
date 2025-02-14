@@ -14,7 +14,7 @@ exports.createCourse = async (req, res) => {
     }
 
     const instructorId = req.user.id;
-    const { title, category, level, primaryLanguage, subtitle, description, pricing, objectives, welcomeMessage, image } = req.body;
+    const { title, category, level, primaryLanguage, subtitle, description, pricing, objectives, welcomeMessage, image ,curriculum } = req.body;
 
     // ✅ Validate required fields
     if (!title || !pricing) {
@@ -34,11 +34,23 @@ exports.createCourse = async (req, res) => {
       return res.status(404).json({ message: "Instructor not found." });
     }
 
+     // ✅ Validate curriculum (if provided)
+     let validatedCurriculum = [];
+     if (curriculum && Array.isArray(curriculum)) {
+       validatedCurriculum = curriculum.map((lesson) => ({
+         title: lesson.title,
+         videoUrl: lesson.videoUrl,
+         freePreview: lesson.freePreview || false,
+         public_id: lesson.public_id || "",
+       }));
+     }
+
     const newCourse = new Course({
       title, category, level, primaryLanguage, subtitle, description, pricing,
       objectives, welcomeMessage, image, // ✅ Store the image URL or Base64 string
       instructorId,
       instructorName: `${instructor.FName} ${instructor.LName}`,
+      curriculum: validatedCurriculum,
       date: new Date(),
       isPublished: true,
     });

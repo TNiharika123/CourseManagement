@@ -73,23 +73,29 @@ const CourseForm = () => {
   };
   
 
+  // ✅ Handle changes for curriculum fields
   const handleCurriculumChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedCurriculum = [...courseCurriculumFormData];
-    updatedCurriculum[index] = { ...updatedCurriculum[index], [name]: value };
-    setCourseCurriculumFormData(updatedCurriculum);
+    const { name, value, type, checked } = e.target;
+    setCourseCurriculumFormData((prevCurriculum) =>
+      prevCurriculum.map((module, i) =>
+        i === index
+          ? { ...module, [name]: type === "checkbox" ? checked : value }
+          : module
+      )
+    );
   };
 
   const handleAddCurriculum = () => {
-    setCourseCurriculumFormData([
-      ...courseCurriculumFormData, 
-      { title: '', videoUrl: '', freePreview: false, public_id: '' }
+    setCourseCurriculumFormData((prevCurriculum) => [
+      ...prevCurriculum,
+      { title: "", videoUrl: "", freePreview: false, public_id: "" },
     ]);
   };
 
   const handleRemoveCurriculum = (index) => {
-    const updatedCurriculum = courseCurriculumFormData.filter((_, i) => i !== index);
-    setCourseCurriculumFormData(updatedCurriculum);
+    setCourseCurriculumFormData((prevCurriculum) =>
+      prevCurriculum.filter((_, i) => i !== index)
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -107,7 +113,7 @@ const CourseForm = () => {
       date: new Date(),
       ...courseLandingFormData,
       pricing: Number(courseLandingFormData.pricing),
-      curriculum: courseCurriculumFormData,
+      curriculum: [...courseCurriculumFormData], // ✅ Ensure curriculum is included
       isPublished: true,
     };
   
