@@ -11,45 +11,48 @@ const NavBar = ({ onLogout, learnerId }) => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'primary.main' }}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <AppBar 
+      position="fixed" 
+      sx={{ 
+        background: 'linear-gradient(135deg, #1e3c72 30%, #2a5298 90%)', // Modern gradient
+        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', // Subtle shadow
+        paddingY: 0.5,
+        zIndex: 1100 // Ensures it's above other elements
+      }}
+    >
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        
+        {/* Logo / Branding */}
         <Typography 
-          variant="h6" 
+          variant="h5" 
           component="div" 
-          sx={{ flexGrow: 1, fontSize: '1.5rem', fontWeight: 'bold' }}
+          sx={{ 
+            fontWeight: 'bold', 
+            letterSpacing: '1px', 
+            color: '#fff', 
+            fontFamily: 'Poppins, sans-serif'
+          }}
         >
-          Learning Platform
+          LearnSphere
         </Typography>
+
+        {/* Navigation Links */}
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/" 
-            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
-          >
-            Home
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to={`/enrolled/${learnerId}`} 
-            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
-          >
-            My Courses
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/support" 
-            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'primary.light' } }}
-          >
-            Support
-          </Button>
+          <NavButton to="/" label="Home" />
+          <NavButton to={`/enrolled/${learnerId}`} label="My Courses" />
+          <NavButton to="/support" label="Support" />
           
+          {/* Logout Button */}
           <Button 
             color="inherit" 
             onClick={handleLogout} 
-            sx={{ textTransform: 'none', '&:hover': { backgroundColor: 'error.main' } }}
+            sx={{ 
+              textTransform: 'none', 
+              backgroundColor: '#ff5f5f', 
+              '&:hover': { backgroundColor: '#e63946' }, 
+              borderRadius: '8px', 
+              paddingX: 2
+            }}
           >
             Logout
           </Button>
@@ -58,5 +61,21 @@ const NavBar = ({ onLogout, learnerId }) => {
     </AppBar>
   );
 };
+
+/* Styled Navigation Button Component */
+const NavButton = ({ to, label }) => (
+  <Button 
+    component={Link} 
+    to={to} 
+    sx={{ 
+      textTransform: 'none', 
+      color: 'white', 
+      fontWeight: 'bold', 
+      '&:hover': { color: '#fbc531' } 
+    }}
+  >
+    {label}
+  </Button>
+);
 
 export default NavBar;

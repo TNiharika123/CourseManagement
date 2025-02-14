@@ -143,6 +143,8 @@
 // export default EnrolledCourses;
 
 import React, { useEffect, useState } from 'react';
+import courseGridBg from '../assets/course4.jpg'; // Adjust the path
+
 import axios from 'axios';
 import { Grid, Card, CardContent, Typography, Button, CircularProgress, Box, CardMedia, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -200,7 +202,10 @@ const EnrolledCourses = ({ learnerId }) => {
   }
 
   return (
-    <Box sx={{ padding: 4, backgroundColor: '#eef2f3', minHeight: '100vh' }}>
+    <Box sx={{ 
+      //  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1 )), url(${courseGridBg})`, 
+      //  backgroundSize: 'cover',backgroundPosition: 'center', backgroundRepeat: 'no-repeat', 
+      padding: 4, backgroundColor: '#eef2f3', minHeight: '100vh',paddingY:10 }}>
       <Typography variant="h3" fontWeight="bold" align="center" gutterBottom>
         Your Learning Dashboard
       </Typography>

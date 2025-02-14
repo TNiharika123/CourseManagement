@@ -7,6 +7,7 @@ import LearnerLogin from "./components/LearnerLogin";
 import InstructorLogin from "./components/InstructorLogin";
 import RegistrationPage from "./components/RegistrationPage";
 import InstructorRegister from "./components/InstructorRegister";
+import LandingPage from "./components/LandingPage";
 
 const theme = createTheme({
   palette: {
@@ -61,6 +62,7 @@ const App = () => {
       <Router>
         <Routes>
           {/* Public Routes */}
+          {/* <Route path="/" element={<LandingPage />} /> */}
           <Route path="/login" element={<LearnerLogin setUser={setUser} />} />
           <Route path="/register" element={<RegistrationPage setUser={setUser} />} />
           <Route path="/InstructorLogin" element={<InstructorLogin setUser={setUser} />} />

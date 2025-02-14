@@ -118,7 +118,7 @@ const PaymentForm = ({learnerId }) => {
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: "20px" }}>
+    <Container maxWidth="sm" sx={{paddingY:8}} style={{ marginTop: "20px",paddingY:10 }}>
       {selectedCourse ? (
         <>
           <Typography variant="h4" gutterBottom align="center">Checkout</Typography>

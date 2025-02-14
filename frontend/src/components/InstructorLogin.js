@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   Container,
   Card,
+  Paper,
   CardContent,
   Typography,
   TextField,
@@ -95,12 +96,11 @@ const InstructorLogin = ({setUser} ) => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 5 }}>
-      <Card sx={{ p: 4, boxShadow: 4, borderRadius: 3 }}>
-        <CardContent>
-          <Typography variant="h4" align="center" fontWeight="bold" color="primary" gutterBottom>
-            Instructor Login
-          </Typography>
+     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#f4f6f8" }}>
+       <Paper sx={{ padding: 4, maxWidth: 400, width: "100%" }}>
+        <Typography variant="h5" sx={{ textAlign: "center", mb: 3 }}>
+                  Instructor Login
+                </Typography>
 
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
@@ -168,7 +168,7 @@ const InstructorLogin = ({setUser} ) => {
               variant="outlined"
               value={captchaInput}
               onChange={(e) => setCaptchaInput(e.target.value)}
-              sx={{ mt: 2, mb: 2 }}
+              sx={{  mb: 2 }}
               required
             />
 
@@ -178,8 +178,8 @@ const InstructorLogin = ({setUser} ) => {
           </form>
 
           {/* Login Options (Admin, Instructor, Learner) */}
-          <Box sx={{ mt: 4, textAlign: "center" }}>
-            <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
+          <Box sx={{ textAlign: "center", mt: 3 }}>
+            <Typography variant="body2">
               Login as:
             </Typography>
             <Grid container spacing={2} justifyContent="center">
@@ -206,13 +206,12 @@ const InstructorLogin = ({setUser} ) => {
                 </Button>
               </Grid>
             </Grid>
-          </Box>
-
           {/* Registration Links */}
-          <Box sx={{ mt: 4, textAlign: "center" }}>
-            <Typography variant="body1" fontWeight="bold" sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ mt: 2 }}>
               New User?
             </Typography>
+
+
             <Grid container spacing={2} justifyContent="center">
               
               <Grid item>
@@ -228,9 +227,8 @@ const InstructorLogin = ({setUser} ) => {
              
             </Grid>
           </Box>
-        </CardContent>
-      </Card>
-    </Container>
+      </Paper>
+    </Box>
   );
 };
 

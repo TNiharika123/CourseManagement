@@ -265,7 +265,9 @@ const Support = () => {
 
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="md" sx={{ py: 4 ,paddingY:12,
+      
+    }}>
       <Typography variant="h4" align="center" fontWeight="bold" color="primary" gutterBottom>
         Support & Help Center
       </Typography>

@@ -3,6 +3,7 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const path = require("path");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 const fs = require("fs");
 const axios = require("axios");
 const fetch = require("node-fetch");  // Add the node-fetch module for the server-side fetch requests
@@ -83,13 +84,15 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/courses", require("./routes/courseRoutes"));
 app.use("/api/learners", require("./routes/learnerRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
-app.use("/api/quizzes", require("./routes/quizRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/instructors", require("./routes/instructorRoutes"));
 app.use("/api/exams", require("./routes/aiExamRoutes"));
 app.use("/api/support", require("./routes/supportRoutes"));
 // Add this line with your other routes
 app.use("/api/recaptcha", require("./routes/recaptchaRoutes"));
+// app.use("/api/quiz", require("./routes/quizRoutes"));
+// app.use("/api/attempt", require("./routes/attemptRoutes"));
+
 
 // Default Route
 app.get("/", (req, res) => {

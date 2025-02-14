@@ -18,10 +18,14 @@ const RegistrationPage = ({ setLearnerId }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,25 +34,32 @@ const RegistrationPage = ({ setLearnerId }) => {
     setError("");
     setEmailError("");
     setPasswordError("");
+    setConfirmPasswordError("");
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required");
       return;
     }
 
     // ✅ Email validation
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       setEmailError("Please enter a valid email address");
       return;
     }
 
-    // ✅ Password validation (allows special characters but not required)
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_])?.{6,}$/;
+    // ✅ Password validation (requires at least one letter, one number, and one special character)
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!passwordRegex.test(password)) {
       setPasswordError(
-        "Password must be at least 6 characters long, include at least one letter and one number. Special characters are allowed but not required."
+        "Password must be at least 6 characters long, include at least one letter, one number, and one special character (@$!%*?&)."
       );
+      return;
+    }
+
+    // ✅ Confirm password validation
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
       return;
     }
 
@@ -63,7 +74,6 @@ const RegistrationPage = ({ setLearnerId }) => {
 
       console.log("✅ Registration Successful:", response.data);
 
-      // ✅ Check if setLearnerId is passed before calling
       if (setLearnerId) {
         setLearnerId(response.data.learner._id);
       }
@@ -84,6 +94,7 @@ const RegistrationPage = ({ setLearnerId }) => {
         {error && <Alert severity="error">{error}</Alert>}
         {emailError && <Alert severity="error">{emailError}</Alert>}
         {passwordError && <Alert severity="error">{passwordError}</Alert>}
+        {confirmPasswordError && <Alert severity="error">{confirmPasswordError}</Alert>}
 
         <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%", mt: 2 }}>
           <Grid container spacing={2}>
@@ -117,15 +128,33 @@ const RegistrationPage = ({ setLearnerId }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={!!passwordError}
-                helperText={
-                  passwordError ||
-                  "Password must be at least 6 characters long, include at least one letter and one number. Special characters are allowed but not required."
-                }
+                helperText={passwordError || "Must be at least 6 characters, include one letter, one number, and one special character."}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setPasswordVisible(!passwordVisible)}>
                         {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Confirm Password *"
+                type={confirmPasswordVisible ? "text" : "password"}
+                variant="outlined"
+                fullWidth
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={!!confirmPasswordError}
+                helperText={confirmPasswordError}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}>
+                        {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
                       </IconButton>
                     </InputAdornment>
                   ),

@@ -1,117 +1,60 @@
-// import React, { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-// import { Button, Card, CardContent, Typography, Grid, CircularProgress, Box } from "@mui/material";
+// HomePage.js (Course Listing)
+import React, { useEffect, useState } from 'react';
+import courseGridBg from '../assets/course4.jpg'; // Adjust the path
 
-// const HomePage = () => {
-//   const [courses, setCourses] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
+import { 
+  Container, 
+  Grid, 
+  Card, 
+  CardContent, 
+  CardMedia, 
+  Typography, 
+  Button, 
+  CircularProgress, 
+  Box,
+  Chip,
+  IconButton,
+  Paper,
+  styled
+} from '@mui/material';
+import { 
+  Language, 
+  SignalCellularAlt, 
+  AccessTime, 
+  BookmarkBorder,
+  Star
+} from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 
-//   // Fetch courses from the API when the component is mounted
-//   useEffect(() => {
-//     const fetchCourses = async () => {
-//       try {
-//         const response = await fetch('http://localhost:5000/api/courses'); // Replace with your API endpoint
-//         if (!response.ok) {
-//           throw new Error('Failed to fetch courses');
-//         }
-//         const data = await response.json();
-//         setCourses(data); // Assuming the API returns an array of courses
-//       } catch (error) {
-//         setError(error.message);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
+// Styled components
+const StyledCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-10px)',
+    boxShadow: theme.shadows[10],
+  },
+}));
 
-//     fetchCourses();
-//   }, []); // Empty dependency array to run this effect only once
+const PriceChip = styled(Chip)(({ theme }) => ({
+  position: 'absolute',
+  top: theme.spacing(2),
+  right: theme.spacing(2),
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  fontWeight: 'bold',
+}));
 
-
-//   if (loading) {
-//     return (
-//       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-//         <CircularProgress size={60} />
-//       </Box>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <Box sx={{ padding: 3, textAlign: "center" }}>
-//         <Typography variant="h6" color="error">
-//           Error: {error}
-//         </Typography>
-//       </Box>
-//     );
-//   }
-
-//   return (
-//     <Box sx={{ padding: 4 }}>
-//       <Typography variant="h4" align="center" sx={{ marginBottom: 4, fontWeight: "bold" }}>
-//         Learner View: Buy Courses
-//       </Typography>
-
-//       <Grid container spacing={3}>
-//         {courses.length === 0 ? (
-//           <Typography variant="h6" align="center" sx={{ width: "100%" }}>
-//             No courses available
-//           </Typography>
-//         ) : (
-//           courses.map((course) => (
-//             <Grid item xs={12} sm={6} md={4} key={course._id}>
-//               <Card
-//                 variant="outlined"
-//                 sx={{
-//                   borderRadius: 3,
-//                   boxShadow: 3,
-//                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-//                   "&:hover": {
-//                     transform: "scale(1.05)",
-//                     boxShadow: 6,
-//                   },
-//                 }}
-//               >
-//                 <CardContent>
-//                   <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-//                     {course.title}
-//                   </Typography>
-//                   <Typography variant="body2" sx={{ marginBottom: 1 }}>
-//                     <strong>Price:</strong> ₹{course.pricing || "N/A"}
-//                   </Typography>
-//                   <Typography variant="body2" sx={{ marginBottom: 2 }}>
-//                     <strong>Description:</strong> {course.description || "No description available"}
-//                   </Typography>
-//                   <Button
-//                     variant="contained"
-//                     color="primary"
-//                     component={Link}
-//                     to={`/payment/${course._id}`}
-//                     sx={{
-//                       padding: "10px 20px",
-//                       borderRadius: 3,
-//                       fontSize: "1rem",
-//                       "&:hover": { backgroundColor: "primary.dark" },
-//                     }}
-//                   >
-//                     Enroll Now
-//                   </Button>
-//                 </CardContent>
-//               </Card>
-//             </Grid>
-//           ))
-//         )}
-//       </Grid>
-//     </Box>
-//   );
-// };
-
-// export default HomePage;
-
-
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, CircularProgress, Box } from "@mui/material";
+const HeroSection = styled(Box)(({ theme }) => ({
+  backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("/assets/course3.jpg")',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  color: theme.palette.common.white,
+  padding: theme.spacing(2, 0),
+  marginBottom: theme.spacing(6),
+}));
 
 const HomePage = () => {
   const [courses, setCourses] = useState([]);
@@ -156,73 +99,96 @@ const HomePage = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Typography variant="h3" fontWeight="bold" align="center" gutterBottom>
-        Explore Top Courses
-      </Typography>
-      <Typography variant="subtitle1" align="center" color="textSecondary" gutterBottom>
-        Learn from world-class instructors and enhance your skills
-      </Typography>
-      <Grid container spacing={4}>
-        {courses.length === 0 ? (
-          <Typography variant="h6" align="center" sx={{ width: "100%" }}>
-            No courses available
+    <Box sx={{ 
+      backgroundImage: `linear-gradient(to bottom right, rgba(238, 246, 246, 0.8), rgba(231, 237, 239, 0.8))`, 
+      backgroundSize: 'cover', 
+      backgroundPosition: 'center', 
+      backgroundRepeat: 'no-repeat', 
+      minHeight: '100vh', // Ensure it covers the entire screen height
+      display: 'flex',
+      paddingY:8,
+      flexDirection: 'column',
+    }}>
+      <HeroSection>
+        <Container maxWidth="lg">
+          <Typography variant="h2" gutterBottom align="center">
+            Explore Top Courses
           </Typography>
-        ) : (
-          courses.map((course) => (
-            <Grid item xs={12} sm={6} md={4} key={course._id}>
-              <Card sx={{
-                boxShadow: 5,
-                borderRadius: 3,
-                transition: "0.3s",
-                '&:hover': { boxShadow: 10, transform: "scale(1.05)" },
-                overflow: "hidden",
-              }}>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={course.image || "https://via.placeholder.com/300"}
-                  alt={course.title}
-                  sx={{ objectFit: "cover" }}
-                />
-                <CardContent sx={{ p: 3 }}>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {course.title}
-                  </Typography>
-                  <Typography variant="body1" fontWeight="bold" color="primary" gutterBottom>
-                    ₹{course.pricing || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" fontWeight="medium" color="secondary" gutterBottom>
-                    Language: {course.primaryLanguage || "English"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-                    {course.subtitle || "No description available"}
-                  </Typography>
-                  <Box display="flex" justifyContent="right" alignItems="center" sx={{ mb: 2 }}>
-                    <Typography variant="body2" color="textSecondary">
-                      LEVEL:
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" fontWeight="bold">
-                      {course.level || "N/A"}
-                    </Typography>
+          <Typography variant="h5" align="center">
+            Learn from world-class instructors and enhance your skills
+          </Typography>
+        </Container>
+      </HeroSection>
+
+      {/* Course Grid */}
+      <Container maxWidth="lg" 
+  sx={{ 
+    py: 4, 
+  }}>
+        <Grid container spacing={4}>
+          {courses.length === 0 ? (
+            <Typography variant="h6" align="center" sx={{ width: "100%" }}>
+              No courses available
+            </Typography>
+          ) : (
+            courses.map((course) => (
+              <Grid item xs={12} sm={6} md={4} key={course._id}>
+                <StyledCard>
+                  <Box sx={{ position: 'relative' }}>
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={course.image || "https://via.placeholder.com/300"}
+                      alt={course.title}
+                    />
+                    <PriceChip 
+                      label={`₹${course.pricing || 'Free'}`}
+                    />
                   </Box>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    color="primary"
-                    component={Link}
-                    to={`/payment/${course._id}`}
-                    sx={{ py: 1.5, fontSize: "1rem", fontWeight: "bold" }}
-                  >
-                    Enroll Now
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
-      </Grid>
-    </Container>
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" gutterBottom>
+                      {course.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" paragraph>
+                      {course.subtitle || "No description available"}
+                    </Typography>
+                    
+                    <Grid container spacing={2} sx={{ mb: 2 }}>
+                      <Grid item xs={6}>
+                        <Box display="flex" alignItems="center">
+                          <Language sx={{ mr: 1, color: 'primary.main' }} />
+                          <Typography variant="body2">
+                            {course.primaryLanguage || "English"}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Box display="flex" alignItems="center">
+                          <SignalCellularAlt sx={{ mr: 1, color: 'primary.main' }} />
+                          <Typography variant="body2">
+                            {course.level || "All Levels"}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>
+
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      component={Link}
+                      to={`/payment/${course._id}`}
+                      sx={{ mt: 2 }}
+                    >
+                      Enroll Now
+                    </Button>
+                  </CardContent>
+                </StyledCard>
+              </Grid>
+            ))
+          )}
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

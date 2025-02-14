@@ -248,7 +248,7 @@ const CourseDisplay = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, margin: "auto", padding: 3, backgroundColor: "#f9f9f9" }}>
+    <Box sx={{ maxWidth: 1200, margin: "auto", padding: 3, backgroundColor: "#f9f9f9" ,paddingY:10}}>
       <Card sx={{ mb: 4, backgroundColor: "#263238", color: "white", borderRadius: 2 }}>
         <CardContent>
           <Typography variant="h4" fontWeight="bold">{courseDetails.title}</Typography>
